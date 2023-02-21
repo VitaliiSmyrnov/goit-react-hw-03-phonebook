@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
-import initialContacts from 'db/initialContacts.json';
 import { ContactForm, Filter, ContactList } from 'components';
 import {
   StyledContactsBox,
@@ -10,9 +9,23 @@ import {
 
 export class App extends Component {
   state = {
-    contacts: initialContacts,
+    contacts: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const initialContacts = JSON.parse(localStorage.getItem('contacts'));
+
+    if (initialContacts) {
+      this.setState({ contacts: initialContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
 
   handleInputChange = e => {
     const { name, value } = e.currentTarget;
